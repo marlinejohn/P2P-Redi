@@ -1,0 +1,9 @@
+[
+    { "id": 1, "name": "cat", "weight": 5, "eating_habit": "Carnivore" },
+    { "id": 2, "name": "dog", "weight": 15, "eating_habit": "Omnivore" },
+    { "id": 3, "name": "hamster", "weight": 2, "eating_habit": "Omnivore" },
+    { "id": 4, "name": "rabbit", "weight": 5, "eating_habit": "Herbivore" },
+    { "id": 5, "name": "duck", "weight": 4, "eating_habit": "Herbivore" },
+    { "id": 6, "name": "goat", "weight": 20, "eating_habit": "Herbivore" },
+    { "id": 7, "name": "cow", "weight": 70, "eating_habit": "Herbivore" }
+]
