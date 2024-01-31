@@ -5,7 +5,7 @@ const fs = require('fs').promises; // Using promises version of fs for async/awa
 
 const dbFilePath = 'db.json';
 
-const getDataFromFile = async () => {
+const getData = async () => {
     try {
         const data = await fs.readFile(dbFilePath);
         return JSON.parse(data);
@@ -14,12 +14,12 @@ const getDataFromFile = async () => {
     }
 };
 
-const saveDataToFile = async (data) => {
+const saveData = async (data) => {
     await fs.writeFile(dbFilePath, JSON.stringify(data, null, 2));
 };
 
 const addPet = async (req, res) => {
-    let data = await getDataFromFile();
+    let data = await getData();
 
     let body = '';
 
@@ -32,7 +32,7 @@ const addPet = async (req, res) => {
         newPet.id = data.length + 1;
         data.push(newPet);
 
-        await saveDataToFile(data);
+        await saveData(data);
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(newPet));
@@ -40,9 +40,25 @@ const addPet = async (req, res) => {
 };
 
 const getAllPets = async (res) => {
-    const data = await getDataFromFile();
+    const data = await getData();
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(data));
 };
 
+const server = http.createServer(async (req, res) => {
+    const parseUrl = url.parse(req.url, true);
+    const path = parseUrl.pathname;
+
+    if (path === '/pets' && req.method === 'GET') {
+        await getAllPets(res);
+    } else if (path === '/pets' && req.method === 'POST') {
+        await addPet(req, res);
+    }
+});
+
+const port = 2000;
+
+server.listen(port, () => {
+    console.log(`Server started at http://localhost:${port}/`);
+});
