@@ -46,5 +46,11 @@
     "name": "nnn",
     "weight": 5,
     "eating_habit": "Carnivore"
+  },
+  {
+    "id": 9,
+    "name": "mmm",
+    "weight": 8,
+    "eating_habit": "Carnivore"
   }
 ]

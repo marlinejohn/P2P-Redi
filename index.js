@@ -1,7 +1,10 @@
-// index.js
-const http = require('http');
-const url = require('url');
-const fs = require('fs').promises; // Using promises version of fs for async/await
+const express = require('express');
+const app = express();
+const fs = require('fs').promises;
+const port = 2000; 
+
+// Middleware to parse JSON requests
+app.use(express.json());
 
 const dbFilePath = 'db.json';
 
@@ -18,47 +21,25 @@ const saveData = async (data) => {
     await fs.writeFile(dbFilePath, JSON.stringify(data, null, 2));
 };
 
-const addPet = async (req, res) => {
-    let data = await getData();
-
-    let body = '';
-
-    req.on('data', (chunk) => {
-        body += chunk;
-    });
-
-    req.on('end', async () => {
-        const newPet = JSON.parse(body);
-        newPet.id = data.length + 1;
-        data.push(newPet);
-
-        await saveData(data);
-
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(newPet));
-    });
-};
-
-const getAllPets = async (res) => {
+app.post('/pets', async (req, res) => {
     const data = await getData();
 
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(data));
-};
+    const newPet = req.body;
+    newPet.id = data.length + 1;
+    data.push(newPet);
 
-const server = http.createServer(async (req, res) => {
-    const parseUrl = url.parse(req.url, true);
-    const path = parseUrl.pathname;
+    await saveData(data);
 
-    if (path === '/pets' && req.method === 'GET') {
-        await getAllPets(res);
-    } else if (path === '/pets' && req.method === 'POST') {
-        await addPet(req, res);
-    }
+    res.status(200).json(newPet);
 });
 
-const port = 2000;
+app.get('/pets', async (req, res) => {
+    const data = await getData();
+    res.status(200).json(data);
+});
 
-server.listen(port, () => {
+app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}/`);
 });
+
+
